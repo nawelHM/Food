@@ -1,0 +1,116 @@
+/* ================= SIDEBAR BASE ================= */
+.sidebar {
+    width: 18%;
+    min-height: 100vh;
+    border: 1.5px solid #ddd;
+    border-top: 0;
+    background: #fff;
+    font-size: max(1vw, 12px);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-options {
+    padding-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sidebar-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-left: 3px solid transparent;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sidebar-option img {
+    width: 24px;
+    height: 24px;
+}
+
+.sidebar-option span {
+    font-weight: 500;
+}
+
+/* ACTIVE + HOVER STATES */
+.sidebar-option.active {
+    background-color: #fff0ed;
+    border-left-color: tomato;
+    color: tomato;
+    font-weight: 600;
+}
+
+.sidebar-option:hover {
+    background-color: #ffe8e0;
+}
+
+/* ================= RESPONSIVE ================= */
+/* Tablet */
+@media (max-width: 1024px) {
+    .sidebar {
+        width: 24%;
+    }
+}
+
+/* Mobile top bar */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+        border: 0;
+        border-bottom: 1px solid #ddd;
+        padding: 10px 0;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .sidebar-options {
+        flex-direction: row;
+        gap: 12px;
+        padding: 0;
+    }
+
+    .sidebar-option {
+        border-radius: 10px;
+        padding: 8px 12px;
+    }
+}
+
+/* Small screens — stacked icon + text */
+@media (max-width: 560px) {
+    .sidebar-option {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 4px;
+        width: 64px;
+        height: 64px;
+        text-align: center;
+    }
+
+    .sidebar-option span {
+        font-size: 11px;
+        line-height: 1.2;
+    }
+}
+
+/* Very small — icons only */
+@media (max-width: 400px) {
+    .sidebar-option span {
+        display: none;
+    }
+
+    .sidebar-option {
+        width: 42px;
+        height: 42px;
+        gap: 0;
+    }
+}

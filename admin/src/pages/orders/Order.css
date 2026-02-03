@@ -1,0 +1,30 @@
+.admin-orders {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.admin-orders table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.admin-orders th, 
+.admin-orders td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.admin-orders th {
+  background-color: #f4f4f4;
+  font-weight: 600;
+}
+
+.admin-orders tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.admin-orders tr:hover {
+  background-color: #fff0ed;
+}

@@ -1,0 +1,97 @@
+.list {
+  padding: 20px;
+}
+
+.list h2 {
+  margin-bottom: 20px;
+  font-size: clamp(18px, 2vw, 24px);
+}
+
+.list-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Header & rows */
+.list-table-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 1fr 1fr 50px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.list-table-header {
+  font-weight: bold;
+  background: #f0f0f0;
+}
+
+/* Image styling */
+.food-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Delete button */
+.delete-btn {
+  cursor: pointer;
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  transition: 0.2s;
+}
+
+.delete-btn:hover {
+  transform: scale(1.2);
+}
+
+/* =======================
+   RESPONSIVE MEDIA QUERIES
+======================= */
+
+/* Table becomes stacked on small screens */
+@media (max-width: 768px) {
+  .list-table-row {
+    grid-template-columns: 1fr; /* full width rows */
+    grid-template-rows: auto auto auto auto auto;
+    padding: 15px;
+  }
+
+  .list-table-row span,
+  .list-table-row img {
+    justify-self: start;
+    margin-bottom: 5px;
+  }
+
+  .food-image {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    margin-bottom: 10px;
+  }
+
+  .delete-btn {
+    justify-self: end;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+  .list {
+    padding: 10px;
+  }
+
+  .list h2 {
+    font-size: clamp(16px, 4vw, 20px);
+  }
+
+  .list-table-row {
+    padding: 10px;
+  }
+}
