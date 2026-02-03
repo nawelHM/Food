@@ -18,9 +18,16 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// middleware
-app.use(cors());
+app.use(cors({
+  origin: "https://food-front-murex.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
+
+app.options("*", cors()); // 🔥 REQUIRED on Vercel
 app.use(express.json());
+
 
 // DB (important : une seule fois)
 connectDB();

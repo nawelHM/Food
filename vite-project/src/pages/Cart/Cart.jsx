@@ -10,7 +10,7 @@ const Cart = () => {
     getTotalCartAmount,
     food_list, // ✅ depuis le backend
   } = useContext(StoreContext);
-
+const API_URL = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
   return (
@@ -35,7 +35,7 @@ const Cart = () => {
             return (
               <div className="cart-items-item" key={item._id}>
                 <img
-                  src={`http://localhost:4000${item.image}`}
+                  src={`${API_URL}${item.image}`}
                   alt={item.name}
                 />
                 <p>{item.name}</p>
