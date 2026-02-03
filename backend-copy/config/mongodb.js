@@ -1,12 +1,11 @@
 import mongoose from "mongoose";
-import 'dotenv/config'; // ensures process.env is loaded
+import 'dotenv/config'; // ensure env variables are loaded
 
 export const connectDB = async () => {
   try {
-    // Read URI from env
-    const mongoUri = process.env.MONGO_URI;
+    const mongoUri = process.env.MONGO_URI; // read from .env
     if (!mongoUri) {
-      throw new Error("MONGO_URI is not defined in environment variables");
+      throw new Error("MONGO_URI not set in environment");
     }
 
     await mongoose.connect(mongoUri, {
