@@ -21,10 +21,10 @@ const app = express();
 // middleware
 app.use(
   cors({
-    origin: "https://food-front-murex.vercel.app",
+    origin: "https://food-front-murex.vercel.app", // ton front
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: true,
+    credentials: true, // si tu utilises les cookies
   })
 );
 
