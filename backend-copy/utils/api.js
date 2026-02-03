@@ -1,12 +1,7 @@
 import axios from "axios";
 
-const baseURL =
-  process.env.NODE_ENV === "production"
-    ? "https://ton-backend-vercel.vercel.app/api"
-    : "http://localhost:4000/api";
-
 const api = axios.create({
-  baseURL,
+  baseURL: import.meta.env.VITE_API_URL, // <-- use VITE_ env
 });
 
 api.interceptors.request.use((config) => {

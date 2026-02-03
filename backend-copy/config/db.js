@@ -1,18 +1,15 @@
 import mongoose from "mongoose";
-import 'dotenv/config'; // ensures process.env is loaded
+import 'dotenv/config'; // load environment variables
 
 export const connectDB = async () => {
   try {
-    // Read URI from env
     const mongoUri = process.env.MONGO_URI;
     if (!mongoUri) {
       throw new Error("MONGO_URI is not defined in environment variables");
     }
 
-    await mongoose.connect(mongoUri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    // ✅ Mongoose 7+ doesn't need useNewUrlParser or useUnifiedTopology
+    await mongoose.connect(mongoUri);
 
     console.log("✅ MongoDB Connected");
   } catch (error) {
