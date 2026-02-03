@@ -18,20 +18,18 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://food-front-murex.vercel.app");
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
+// middleware
+app.use(
+  cors({
+    origin: "https://food-front-murex.vercel.app",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
-  // 🔥 IMPORTANT: reply to preflight
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
 
-  next();
-});
-
+app.use(express.json());
 
 // DB (important : une seule fois)
 connectDB();
