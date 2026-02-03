@@ -25,7 +25,7 @@ const upload = multer({ storage }); // ❌ tu avais écrit "storadge:storadge"
 // Routes
 router.post("/create", upload.single("image"), createFood);
 router.get("/list", getAllFoods);
-router.get("list/:id", getFoodById);
+router.get("/list/:id", getFoodById);
 router.put("/:id", updateFood);
 router.delete("/remove/:id", deleteFood);
 
