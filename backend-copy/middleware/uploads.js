@@ -1,6 +1,8 @@
 // middleware/uploads.js
 import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+
 import streamifier from "streamifier";
 
 cloudinary.config({
