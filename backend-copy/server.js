@@ -18,26 +18,22 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-/* ✅ CORS — VERSION VERCEL SAFE */
-app.use(
-  cors({
-    origin: [
-      "https://food-front-git-main-nawels-projects-e0718b0a.vercel.app",
-      "https://food-front-murex.vercel.app"
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
-app.options("*", cors()); // 🔴 TRÈS IMPORTANT POUR VERCEL
+/* ✅ CORS — CONFIGURATION FINALE */
+app.use(cors({
+  origin: [
+    "https://food-front-git-main-nawels-projects-e0718b0a.vercel.app"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
 
 app.use(express.json());
 
 // DB
 connectDB();
 
-// test
+// test route
 app.get("/", (req, res) => {
   res.send("✅ API Working on Vercel");
 });
@@ -49,7 +45,7 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 
-// static (lecture seule)
+// static uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 export default app;
