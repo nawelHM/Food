@@ -21,7 +21,8 @@ const app = express();
 /* ✅ CORS — CONFIGURATION FINALE */
 app.use(cors({
   origin: [
-    "https://food-front-git-main-nawels-projects-e0718b0a.vercel.app"
+    "https://food-front-git-main-nawels-projects-e0718b0a.vercel.app",
+    "https://food-front-eoymmfrd0-nawels-projects-e0718b0a.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
