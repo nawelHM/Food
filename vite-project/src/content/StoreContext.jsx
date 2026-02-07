@@ -13,7 +13,7 @@ const StoreContextProvider = ({ children }) => {
 
   const fetchFoodList = async () => {
     try {
-      const res = await axios.get(`${API_URL}/api/foods/list`);
+      const res = await fetch(`${API_URL}/api/foods/list`);
       setFoodList(res.data);
     } catch (err) {
       console.error("❌ Fetch foods failed", err);
