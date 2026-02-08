@@ -22,7 +22,8 @@ const app = express();
 app.use(cors({
   origin: [
     "https://food-front-git-main-nawels-projects-e0718b0a.vercel.app",
-    "https://food-front-eoymmfrd0-nawels-projects-e0718b0a.vercel.app"
+    "https://food-front-eoymmfrd0-nawels-projects-e0718b0a.vercel.app",
+    "https://food-front-murex.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
