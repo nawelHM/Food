@@ -8,24 +8,24 @@ const StoreContextProvider = ({ children }) => {
   const [food_list, setFoodList] = useState([]);
   const [cartItem, setCartItem] = useState({});
 
-  // ✅ Use env variable
-  const API_URL = import.meta.env.VITE_API_URL;
-
+  // ✅ FETCH FOODS (PROXY VERCEL)
   const fetchFoodList = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/foods/list`);
+      const res = await axios.get("/api/foods/list");
       setFoodList(res.data);
     } catch (err) {
       console.error("❌ Fetch foods failed", err);
     }
   };
 
+  // ✅ LOAD CART
   const loadCartFromDB = async () => {
     if (!token) return;
     try {
-      const res = await axios.get(`${API_URL}/api/cart`, {
+      const res = await axios.get("/api/cart", {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       const cartObj = {};
       (res.data.items || []).forEach((item) => {
         cartObj[item.productId._id] = item.quantity;
@@ -39,31 +39,34 @@ const StoreContextProvider = ({ children }) => {
 
   const addToCart = async (itemId) => {
     if (!token) return alert("Please login first");
+
     await axios.post(
-      `${API_URL}/api/cart/add`,
+      "/api/cart/add",
       { productId: itemId },
       { headers: { Authorization: `Bearer ${token}` } }
     );
+
     loadCartFromDB();
   };
 
   const removeFromCart = async (itemId) => {
     if (!token) return;
+
     await axios.post(
-      `${API_URL}/api/cart/remove`,
+      "/api/cart/remove",
       { productId: itemId },
       { headers: { Authorization: `Bearer ${token}` } }
     );
+
     loadCartFromDB();
   };
 
   const clearCart = async () => {
     try {
-      const res = await axios.delete(`${API_URL}/api/cart/clear`, {
+      await axios.delete("/api/cart/clear", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCartItem({});
-      console.log("Cart cleared", res.data);
     } catch (error) {
       console.error("Clear cart error", error.response?.data || error.message);
     }
@@ -91,19 +94,19 @@ const StoreContextProvider = ({ children }) => {
     }
   }, [token]);
 
-  const contextValue = {
-    food_list,
-    cartItem,
-    addToCart,
-    removeFromCart,
-    clearCart,
-    getTotalCartAmount,
-    token,
-    setToken,
-  };
-
   return (
-    <StoreContext.Provider value={contextValue}>
+    <StoreContext.Provider
+      value={{
+        food_list,
+        cartItem,
+        addToCart,
+        removeFromCart,
+        clearCart,
+        getTotalCartAmount,
+        token,
+        setToken,
+      }}
+    >
       {children}
     </StoreContext.Provider>
   );
