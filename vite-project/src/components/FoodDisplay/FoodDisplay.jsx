@@ -5,7 +5,7 @@ import FoodItem from "../FoodItem/FoodItem";
 
 const FoodDisplay = ({ category }) => {
   const { food_list } = useContext(StoreContext);
-const API_URL = import.meta.env.VITE_API_URL; 
+
   return (
     <div className="food-display" id="food-display">
       <h2>Top dishes near you</h2>
@@ -23,7 +23,7 @@ const API_URL = import.meta.env.VITE_API_URL;
               name={item.name}
               description={item.description}
               price={item.price}
-              image={`${API_URL}${item.image}`}
+              image={item.image}   {/* ✅ FIX ICI */}
             />
           ))}
       </div>
