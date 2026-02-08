@@ -18,15 +18,21 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-/* ✅ CORS — CONFIGURATION FINALE */
-app.use(cors({
+/* ✅ CORS — VERCEL SAFE (FIX FINAL) */
+const corsOptions = {
   origin: [
     "https://food-front-git-main-nawels-projects-e0718b0a.vercel.app",
     "https://food-front-eoymmfrd0-nawels-projects-e0718b0a.vercel.app"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: false
+};
+
+app.use(cors(corsOptions));
+
+/* 🔥 OBLIGATOIRE POUR VERCEL */
+app.options("*", cors(corsOptions));
 
 app.use(express.json());
 
@@ -48,4 +54,5 @@ app.use("/api/orders", orderRoutes);
 // static uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
+/* 🔥 EXPORT SERVERLESS */
 export default app;
