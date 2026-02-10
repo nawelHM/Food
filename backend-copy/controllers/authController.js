@@ -1,7 +1,7 @@
  
 import User from "../models/userModel.js"; // exact case
  
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import sendEmail from "../utils/sendEmail.js";
 import crypto from "crypto";
