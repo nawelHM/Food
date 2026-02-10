@@ -72,13 +72,10 @@ app.use((req, res) => {
   res.status(404).json({ message: "Route non trouvée" });
 });
 
-// ✅ 8. Export pour Vercel
-export default app;
-
-// Optionnel: Port pour le développement local
-const PORT = process.env.PORT || 4000;
 if (process.env.NODE_ENV !== 'production') {
-  app.listen(PORT, () => {
-    console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
-  });
+  const PORT = process.env.PORT || 4000;
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
+
+export default app;
+ 
