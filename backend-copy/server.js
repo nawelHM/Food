@@ -19,28 +19,30 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 /* ✅ CORS (compatible Vercel / Express 5) */
-// ✅ 2. Configuration CORS
 const allowedOrigins = [
-  "https://food-front-murex.vercel.app", // This must match your frontend URL exactly
+  "https://food-front-murex.vercel.app",
   "https://food-front-git-main-nawels-projects-e0718b0a.vercel.app",
   "https://food-front-eoymmfrd0-nawels-projects-e0718b0a.vercel.app",
-  "http://localhost:5173",
-  "http://localhost:4000"
+  "http://localhost:5173"
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Check if the origin is in our list or if it's a local request (no origin)
-    if (!origin || allowedOrigins.includes(origin)) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      console.log("Blocked by CORS:", origin); // This helps you debug in Vercel logs
+      // For debugging: console.log will show in Vercel Runtime Logs
+      console.log("CORS blocked origin:", origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
+  credentials: true,
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
 }));
 
 app.use(express.json());
