@@ -63,4 +63,4 @@ app.use("/api/orders", orderRoutes);
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-export default app;
+export default app; // INDISPENSABLE pour Vercel
