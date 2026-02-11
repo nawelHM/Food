@@ -17,7 +17,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(express.json());
+
+// --- 1. PRIORITÉ ABSOLUE : CORS ---
+// Doit être avant express.json() et avant les routes
 const allowedOrigins = [
   "https://food-front-murex.vercel.app",
   "https://food-front-git-main-nawels-projects-e0718b0a.vercel.app",
@@ -25,7 +27,6 @@ const allowedOrigins = [
   "http://localhost:5173"
 ];
 
-// ✅ Le middleware CORS gère seul les requêtes OPTIONS
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
@@ -38,29 +39,30 @@ app.use(cors({
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
-  preflightContinue: false, // ✅ Important : dit à CORS de répondre lui-même
+  preflightContinue: false,
   optionsSuccessStatus: 204
 }));
 
-// ❌ SUPPRIMÉ : app.options(...) car c'est elle qui fait crasher votre projet
+// --- 2. ANALYSE DU CORPS (BODY PARSING) ---
+app.use(express.json());
 
-
-
-/* ✅ Database */
+// --- 3. CONNEXION DATABASE ---
+// On lance la connexion, mais Express peut continuer à charger les routes
 connectDB();
 
-/* ✅ Health check */
-app.get("/", (req, res) => {
-  res.status(200).send("✅ API Working on Vercel");
-});
+// --- 4. ROUTES STATIQUES ---
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-/* ✅ API Routes */
+// --- 5. ROUTES API ---
 app.use("/api/foods", foodRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// --- 6. HEALTH CHECK (À la fin ou juste avant les routes API) ---
+app.get("/", (req, res) => {
+  res.status(200).send("✅ API Working on Vercel");
+});
 
-export default app; // INDISPENSABLE pour Vercel
+export default app;
