@@ -18,10 +18,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// --- LOG DE DÉMARRAGE ---
-console.log("🚀 Server starting in", process.env.NODE_ENV || "development", "mode");
-
-// --- 1. PRIORITÉ ABSOLUE : CORS AVEC LOGS ---
+// --- 1. CONFIGURATION DES ORIGINES ---
 const allowedOrigins = [
   "https://food-front-murex.vercel.app",
   "https://food-front-git-main-nawels-projects-e0718b0a.vercel.app",
@@ -29,70 +26,67 @@ const allowedOrigins = [
   "http://localhost:5173"
 ];
 
-// Middleware de log pour voir CHAQUE requête entrante
+// --- 2. MIDDLEWARE DE LOG ET FIX PREFLIGHT ---
 app.use((req, res, next) => {
-  console.log(`📡 [${new Date().toISOString()}] ${req.method} ${req.url}`);
-  console.log(`🔗 Origin: ${req.headers.origin || "No Origin (Direct Access)"}`);
+  const origin = req.headers.origin;
+  console.log(`📡 [${new Date().toISOString()}] ${req.method} ${req.url} - Origin: ${origin || "Direct"}`);
+
+  // Force les headers manuellement pour être sûr que Vercel les voit
+  if (allowedOrigins.includes(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  }
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With, Accept");
+
+  // RÉPONSE IMMÉDIATE POUR OPTIONS (PREFLIGHT)
+  // C'est l'étape qui échoue souvent sur Vercel
+  if (req.method === "OPTIONS") {
+    console.log("✅ Preflight OPTIONS handled successfully");
+    return res.status(204).end();
+  }
   next();
 });
 
-// Remplacez app.use(cors(...)) par ceci :
-app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    const allowedOrigins = [
-        "https://food-front-murex.vercel.app",
-        "https://food-front-git-main-nawels-projects-e0718b0a.vercel.app",
-        "http://localhost:5173"
-    ];
-
-    if (allowedOrigins.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
+// --- 3. CONFIGURATION CORS OFFICIELLE ---
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.error(`❌ CORS check FAILED for: ${origin}`);
+      callback(new Error('Not allowed by CORS'));
     }
+  },
+  credentials: true
+}));
 
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-
-    // IMPORTANT : Répondre immédiatement aux requêtes de pré-vérification
-    if (req.method === 'OPTIONS') {
-        console.log(`✅ Preflight OPTIONS handled for ${origin}`);
-        return res.status(204).end();
-    }
-    
-    next();
-});
-// --- 2. ANALYSE DU CORPS ---
+// --- 4. ANALYSE DU CORPS ET DB ---
 app.use(express.json());
-
-// --- 3. CONNEXION DATABASE ---
 connectDB()
-  .then(() => console.log("💾 Database connected successfully"))
-  .catch(err => console.error("💾 Database connection error:", err));
+  .then(() => console.log("💾 Database connected"))
+  .catch(err => console.error("💾 DB Error:", err));
 
-// --- 4. ROUTES STATIQUES ---
+// --- 5. ROUTES STATIQUES ---
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// --- 5. ROUTES API ---
-// Petit log pour confirmer le chargement des routes
-console.log("🛣️ Loading API routes...");
+// --- 6. ROUTES API ---
 app.use("/api/foods", foodRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 
-// --- 6. HEALTH CHECK ---
+// Health check
 app.get("/", (req, res) => {
   res.status(200).send("✅ API Working on Vercel");
 });
 
-// --- 7. GESTION D'ERREUR GLOBALE ---
+// --- 7. GESTION D'ERREUR ---
 app.use((err, req, res, next) => {
   if (err.message === 'Not allowed by CORS') {
-    console.error("🚫 Blocked by CORS policy");
-    res.status(403).json({ error: "CORS Policy Violation", origin: req.headers.origin });
+    res.status(403).json({ error: "CORS Violation", origin: req.headers.origin });
   } else {
-    console.error("🔥 Server Error:", err.stack);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
