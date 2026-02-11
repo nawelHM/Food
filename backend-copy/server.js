@@ -36,29 +36,31 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // Si pas d'origine (ex: Postman ou accès direct via navigateur), on accepte
-    if (!origin) {
-      console.log("✅ Request with no origin allowed");
-      return callback(null, true);
+// Remplacez app.use(cors(...)) par ceci :
+app.use((req, res, next) => {
+    const origin = req.headers.origin;
+    const allowedOrigins = [
+        "https://food-front-murex.vercel.app",
+        "https://food-front-git-main-nawels-projects-e0718b0a.vercel.app",
+        "http://localhost:5173"
+    ];
+
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+    // IMPORTANT : Répondre immédiatement aux requêtes de pré-vérification
+    if (req.method === 'OPTIONS') {
+        console.log(`✅ Preflight OPTIONS handled for ${origin}`);
+        return res.status(204).end();
     }
     
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      console.log(`✅ CORS check passed for: ${origin}`);
-      callback(null, true);
-    } else {
-      console.error(`❌ CORS check FAILED for: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
-  preflightContinue: false,
-  optionsSuccessStatus: 204
-}));
-
+    next();
+});
 // --- 2. ANALYSE DU CORPS ---
 app.use(express.json());
 
