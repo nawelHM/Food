@@ -17,7 +17,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-
+app.use(express.json());
 const allowedOrigins = [
   "https://food-front-murex.vercel.app",
   "https://food-front-git-main-nawels-projects-e0718b0a.vercel.app",
@@ -44,7 +44,7 @@ app.use(cors({
 
 // ❌ SUPPRIMÉ : app.options(...) car c'est elle qui fait crasher votre projet
 
-app.use(express.json());
+
 
 /* ✅ Database */
 connectDB();
