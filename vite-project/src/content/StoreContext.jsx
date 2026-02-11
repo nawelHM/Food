@@ -3,32 +3,38 @@ import axios from "axios";
 
 export const StoreContext = createContext(null);
 
+// 1. AJOUTE L'URL DE TON BACKEND ICI
+const url = "https://food-back-git-main-nawels-projects-e0718b0a.vercel.app";
+
 const StoreContextProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [food_list, setFoodList] = useState([]);
   const [cartItem, setCartItem] = useState({});
 
-  // ✅ FETCH FOODS (PROXY VERCEL)
+  // ✅ FETCH FOODS (URL complète + withCredentials)
   const fetchFoodList = async () => {
     try {
-      const res = await axios.get("/api/foods/list");
+      const res = await axios.get(`${url}/api/foods/list`, { withCredentials: true });
       setFoodList(res.data);
     } catch (err) {
       console.error("❌ Fetch foods failed", err);
     }
   };
 
-  // ✅ LOAD CART
+  // ✅ LOAD CART (URL complète + withCredentials)
   const loadCartFromDB = async () => {
     if (!token) return;
     try {
-      const res = await axios.get("/api/cart", {
+      const res = await axios.get(`${url}/api/cart`, {
         headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true, // INDISPENSABLE
       });
 
       const cartObj = {};
       (res.data.items || []).forEach((item) => {
-        cartObj[item.productId._id] = item.quantity;
+        if (item.productId) {
+           cartObj[item.productId._id] = item.quantity;
+        }
       });
       setCartItem(cartObj);
     } catch (err) {
@@ -39,32 +45,43 @@ const StoreContextProvider = ({ children }) => {
 
   const addToCart = async (itemId) => {
     if (!token) return alert("Please login first");
-
-    await axios.post(
-      "/api/cart/add",
-      { productId: itemId },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    loadCartFromDB();
+    try {
+        await axios.post(
+          `${url}/api/cart/add`,
+          { productId: itemId },
+          { 
+            headers: { Authorization: `Bearer ${token}` },
+            withCredentials: true 
+          }
+        );
+        loadCartFromDB();
+    } catch (err) {
+        console.error("Add to cart error", err);
+    }
   };
 
   const removeFromCart = async (itemId) => {
     if (!token) return;
-
-    await axios.post(
-      "/api/cart/remove",
-      { productId: itemId },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-    loadCartFromDB();
+    try {
+        await axios.post(
+          `${url}/api/cart/remove`,
+          { productId: itemId },
+          { 
+            headers: { Authorization: `Bearer ${token}` },
+            withCredentials: true 
+          }
+        );
+        loadCartFromDB();
+    } catch (err) {
+        console.error("Remove from cart error", err);
+    }
   };
 
   const clearCart = async () => {
     try {
-      await axios.delete("/api/cart/clear", {
+      await axios.delete(`${url}/api/cart/clear`, {
         headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
       });
       setCartItem({});
     } catch (error) {
@@ -73,7 +90,7 @@ const StoreContextProvider = ({ children }) => {
   };
 
   const getTotalCartAmount = () => {
-    if (!food_list.length) return 0;
+    if (!food_list || !food_list.length) return 0;
     return Object.entries(cartItem).reduce((total, [id, qty]) => {
       const product = food_list.find((p) => p._id === id);
       return product ? total + product.price * qty : total;
@@ -97,6 +114,7 @@ const StoreContextProvider = ({ children }) => {
   return (
     <StoreContext.Provider
       value={{
+        url, // Exporté au cas où tu en as besoin ailleurs
         food_list,
         cartItem,
         addToCart,

@@ -18,13 +18,13 @@ const FoodDisplay = ({ category }) => {
           )
           .map((item) => (
             <FoodItem
-              key={item._id}
-              id={item._id}
-              name={item.name}
-              description={item.description}
-              price={item.price}
-              image={item.image}   {/* ✅ FIX ICI */}
-            />
+  key={item._id}
+  id={item._id}
+  name={item.name}
+  description={item.description}
+  price={item.price}
+  image={item.image} 
+/> 
           ))}
       </div>
     </div>

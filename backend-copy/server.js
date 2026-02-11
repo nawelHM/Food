@@ -49,18 +49,11 @@ app.use((req, res, next) => {
 });
 
 // --- 3. CONFIGURATION CORS OFFICIELLE ---
+ 
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.error(`❌ CORS check FAILED for: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // Accepte n'importe quelle origine qui fait la requête
   credentials: true
 }));
-
 // --- 4. ANALYSE DU CORPS ET DB ---
 app.use(express.json());
 connectDB()

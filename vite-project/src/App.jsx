@@ -7,9 +7,10 @@ import Home from './pages/Home/Home'
 import Footer from './components/Footer/Footer'
 import LoginPopup from './components/LoginPopup/LoginPopup';
 import Orders from "./order/Orders.jsx";
+import axios from 'axios';
 const App = () => {
   const[showLogin,setShowLogin]=useState(false);
-
+axios.defaults.withCredentials = true;
   return (
 
     <> 
